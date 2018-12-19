@@ -1,22 +1,33 @@
-body
-  margin 0
+.visualizer
+  position relative
+  &__canvas
+    width 100vw
+    height 100vh
+    background-color black
 
-#oscilloscope
-  width 100vw
-  height 100vh
-  background-color black
+  &__audio
+    display none
 
-img 
-  width 150px
-  height auto
-  position absolute
-  top 50%
-  left 50%
-  transform translateX(-50%) translateY(-50%)
+  &__canvas
+  &__img 
+    cursor pointer
 
-audio
-  display none;
+  &__cover
+  &__img
+    position absolute
+    top 50%
+    left 50%
+    transform translateX(-50%) translateY(-50%)
 
-#oscilloscope
-img 
-  cursor pointer;
+  &__cover
+    position absolute
+    border-radius 50%
+    overflow hidden
+    user-select none
+    &:hover 
+      margin-top 0 !important
+      margin-left 0 !important
+
+  &__img 
+    width 75%
+    height auto
