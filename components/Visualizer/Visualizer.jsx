@@ -1,8 +1,8 @@
 import "./Visualizer.styl";
-import Visualizer from './Visualizer.js';
+import AudioToCanvas from "./AudioToCanvas.js";
 import React from "react";
 
-export default class extends React.Component {
+export default class Visualizer extends React.Component {
   constructor(props) {
     super(props);
 
@@ -12,15 +12,16 @@ export default class extends React.Component {
     this.audioRef = React.createRef();
     this.coverRef = React.createRef();
 
-    this.visualizer = new Visualizer(
+    this.visualizer = new AudioToCanvas(
       this.audioRef,
       this.canvasRef,
       this.coverRef,
-      ["#1A1A1A", "#ff0050"],
-      100,
-      5,
-      null,
-      true
+      this.parentRef,
+      this.props.colors || ["black", "white"],
+      this.props.circleRadius || 100,
+      this.props.shake || 5,
+      this.props.normalizer || null,
+      this.props.coverVibrates || true
     );
   }
 
@@ -29,7 +30,7 @@ export default class extends React.Component {
 
   componentDidMount() {
     this.visualizer.init();
-    window.addEventListener('resize', this.onResize.bind(this));
+    window.addEventListener("resize", this.onResize.bind(this));
   }
 
   onResize() {
@@ -44,12 +45,11 @@ export default class extends React.Component {
   render() {
     return (
       <div className="visualizer">
-        <div className="visualizer__cover" ref={this.coverRef}>
-          <img
-            className="visualizer__img"
-            src="/static/Media/Images/logo.png"
-            onClick={this.onCanvasClick.bind(this)}
-          />
+        <div
+          className="visualizer__cover"
+          ref={this.coverRef}
+          onClick={this.onCanvasClick.bind(this)}
+        >
           {this.props.children}
         </div>
         <canvas
@@ -57,10 +57,13 @@ export default class extends React.Component {
           ref={this.canvasRef}
           onClick={this.onCanvasClick.bind(this)}
         />
-        <audio className="visualizer__audio" controls ref={this.audioRef} src="/static/Media/Sounds/song2.mp3" />
-
+        <audio
+          className="visualizer__audio"
+          controls
+          ref={this.audioRef}
+          src="/static/Media/Sounds/song3.mp3"
+        />
       </div>
     );
   }
 }
-
