@@ -1,5 +1,6 @@
 import "./Visualizer.styl";
 import AudioToCanvas from "./AudioToCanvas.js";
+import AudioInfo from "./AudioInfo/AudioInfo";
 import React from "react";
 
 export default class Visualizer extends React.Component {
@@ -17,11 +18,14 @@ export default class Visualizer extends React.Component {
       this.canvasRef,
       this.coverRef,
       this.parentRef,
-      this.props.colors || ["black", "white"],
-      this.props.circleRadius || 100,
-      this.props.shake || 5,
-      this.props.normalizer || null,
-      this.props.coverVibrates || true
+      this.props.data[0].colors,
+      this.props.circleRadius,
+      this.props.shake,
+      this.props.normalizer,
+      this.props.coverVibrates,
+      this.props.curves,
+      this.props.innerCurves,
+      this.props.curvesOffset
     );
   }
 
@@ -31,6 +35,7 @@ export default class Visualizer extends React.Component {
   componentDidMount() {
     this.visualizer.init();
     window.addEventListener("resize", this.onResize.bind(this));
+    this.setState({ audioRef: this.audioRef });
   }
 
   onResize() {
@@ -40,6 +45,10 @@ export default class Visualizer extends React.Component {
   onCanvasClick() {
     const audio = this.audioRef.current;
     audio.paused ? audio.play() : audio.pause();
+  }
+
+  onSongChange(index) {
+    this.visualizer.setColors(this.props.data[index].colors);
   }
 
   render() {
@@ -61,9 +70,18 @@ export default class Visualizer extends React.Component {
           className="visualizer__audio"
           controls
           ref={this.audioRef}
-          src="/static/Media/Sounds/song3.mp3"
+          src={this.props.data[0].src}
+        />
+        <AudioInfo
+          audioRef={this.audioRef}
+          data={this.props.data}
+          onSongChange={this.onSongChange.bind(this)}
         />
       </div>
     );
   }
 }
+
+
+
+

@@ -13,6 +13,52 @@ export default class extends React.Component {
   }
 
   render() {
+    const SRCS = [
+      "/static/Media/Sounds/song1.mp3",
+      "/static/Media/Sounds/song2.mp3",
+      "/static/Media/Sounds/song3.mp3"
+    ]
+
+
+    const dataBundle = 
+    [
+      {
+        src: '/static/Media/Sounds/song1.mp3',
+        title: 'shhhreajg',
+        subtitle: 'Code: Pandorum',
+        colors: {
+          accent: '#ff0000',
+          secondary: '',
+          foreground: '#1A1A1A',
+          background: ''
+        }
+      },
+      {
+        src: '/static/Media/Sounds/song2.mp3',
+        title: 'Fade',
+        subtitle: 'Alan Walker',
+        colors: {
+          accent: '#00ff00',
+          secondary: '',
+          foreground: '#1A1A1A',
+          background: ''
+        }
+      },
+      {
+        src: '/static/Media/Sounds/song3.mp3',
+        title: 'Creep',
+        subtitle: 'Radio Head',
+        colors: {
+          accent: '#0000ff',
+          secondary: '',
+          foreground: '#1A1A1A',
+          background: ''
+        }
+      }
+    ]
+
+
+
     return (
       <div>
         <Head>
@@ -22,12 +68,16 @@ export default class extends React.Component {
             content="initial-scale=1.0, width=device-width"
             key="viewport"
           />
+          <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet" />
         </Head>
         <Visualizer
-          colors={["#1A1A1A", "#ff0050"]}
           circleRadius={100}
           shake={5}
           coverVibrates={true}
+          curves={5}
+          innerCurves={2}
+          curvesOffset={6}
+          data={dataBundle}
         >
           <img
             className="visualizer__img"
