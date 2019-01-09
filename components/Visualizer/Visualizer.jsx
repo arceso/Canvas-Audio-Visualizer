@@ -7,7 +7,9 @@ export default class Visualizer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      index: 0
+    };
 
     this.canvasRef = React.createRef();
     this.audioRef = React.createRef();
@@ -36,6 +38,7 @@ export default class Visualizer extends React.Component {
     this.visualizer.init();
     window.addEventListener("resize", this.onResize.bind(this));
     this.setState({ audioRef: this.audioRef });
+
   }
 
   onResize() {
@@ -48,6 +51,7 @@ export default class Visualizer extends React.Component {
   }
 
   onSongChange(index) {
+    this.setState({index});
     this.visualizer.setColors(this.props.data[index].colors);
   }
 

@@ -28,8 +28,8 @@ export default class extends React.Component {
         subtitle: 'Code: Pandorum',
         colors: {
           accent: '#ff0000',
-          secondary: '',
-          foreground: '#1A1A1A',
+          secondary: '#fff',
+          foreground: '#fff',
           background: ''
         }
       },
@@ -39,8 +39,8 @@ export default class extends React.Component {
         subtitle: 'Alan Walker',
         colors: {
           accent: '#00ff00',
-          secondary: '',
-          foreground: '#1A1A1A',
+          secondary: '#1b1b1b',
+          foreground: '#333',
           background: ''
         }
       },
@@ -50,8 +50,8 @@ export default class extends React.Component {
         subtitle: 'Radio Head',
         colors: {
           accent: '#0000ff',
-          secondary: '',
-          foreground: '#1A1A1A',
+          secondary: '#1b1b1b',
+          foreground: '#333',
           background: ''
         }
       }

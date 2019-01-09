@@ -6,20 +6,28 @@ export default class AudioInfo extends React.Component {
     super(props);
 
     this.state = {
-      isPlay: false,
+      playing: false,
       track: 0,
       currentTime: 0
     };
 
     this.audio = null;
 
+    this.timeColorRef = new React.createRef();
+    this.timeLineRef = new React.createRef();
     this.timeCurrentRef = new React.createRef();
-    this.parentRef = new React.createRef();
   }
 
   componentDidMount() {
     this.audio = this.props.audioRef.current;
     setInterval(this.updateTimeReaders.bind(this), 50);
+    this.audio.addEventListener(
+      "ended",
+      (() => {
+        this.setState({ playing: true });
+        this.setNext();
+      }).bind(this)
+    );
   }
 
   updateTimeReaders() {
@@ -28,14 +36,19 @@ export default class AudioInfo extends React.Component {
   }
 
   updateTimeLine() {
-    this.timeCurrentRef.current.style.transform =
-      "translateX(" +
-      (this.parentRef.current.offsetWidth - 30) *
+    const POSITION =
+      (this.timeLineRef.current.offsetWidth -
+        this.timeCurrentRef.current.offsetWidth) *
         (this.audio.currentTime / this.audio.duration) +
-      "px) translateY(-50%)";
+      "px";
+
+    this.timeCurrentRef.current.style.transform =
+      "translateX(" + POSITION + ") translateY(-50%)";
+
+    this.timeColorRef.current.style.width = POSITION;
   }
 
-  onPrevClick() {
+  setPrev() {
     this.setState(
       {
         track:
@@ -48,12 +61,12 @@ export default class AudioInfo extends React.Component {
   }
 
   onPlayPauseClick() {
-    this.setState({ isPlay: !this.state.isPlay });
-    if (this.state.isPlay) this.audio.play();
+    this.setState({ playing: !this.state.playing });
+    if (this.state.playing) this.audio.play();
     else this.audio.pause();
   }
 
-  onNextClick() {
+  setNext() {
     this.setState(
       {
         track:
@@ -65,9 +78,9 @@ export default class AudioInfo extends React.Component {
     );
   }
 
-  setNextIndex() {}
   changeSong() {
-    const HAVE_TO_RESUME = !this.audio.paused;
+    const HAVE_TO_RESUME = this.state.playing || !this.audio.paused;
+    console.log(HAVE_TO_RESUME);
     this.setTrack();
     if (HAVE_TO_RESUME) this.audio.play();
     this.props.onSongChange(this.state.track);
@@ -77,17 +90,30 @@ export default class AudioInfo extends React.Component {
     this.audio.src = this.props.data[this.state.track].src;
   }
 
-  formatToMinutes(time) {
-    let minutes = (time / 60).toFixed(0),
-      seconds = (time - (60 * minutes)).toString().substring(0, 2);
+  onTimeLineClick(event) {
+    this.audio.currentTime =
+      ((event.clientX - this.timeLineRef.current.offsetLeft) /
+        this.timeLineRef.current.offsetWidth) *
+      this.audio.duration;
+  }
 
-    if (seconds < 10) seconds = "0" + seconds.substring(0, 1);
+  formatToMinutes(time) {
+    let fTime = Math.floor(time),
+      minutes = Math.floor(fTime / 60),
+      seconds = fTime - minutes * 60;
+
+    if (seconds < 10) seconds = "0" + seconds;
+    seconds = seconds.toString().substring(0, 2);
 
     return minutes + ":" + seconds || "0:00";
   }
 
   formatToMonospace(string) {
-    return string.split('').map((char, i)=><span className="c-audio-info__time-text-monospace" key={i}>{char}</span>);
+    return string.split("").map((char, i) => (
+      <span className="c-audio-info__time-text-monospace" key={i}>
+        {char}
+      </span>
+    ));
   }
 
   render() {
@@ -95,46 +121,59 @@ export default class AudioInfo extends React.Component {
       backgroundColor: this.props.data[this.state.track].colors.accent
     };
     return (
-      <div className="c-audio-info" ref={this.parentRef}>
-        <p className="c-audio-info__title">
-          {this.props.data[this.state.track].title}
-        </p>
-        <p className="c-audio-info__author">
-          {this.props.data[this.state.track].subtitle}
-        </p>
+      <div className="c-audio-info">
+        <div className="c-audio-info__time-text">
+          <p className="c-audio-info__time-text-current">
+            {this.formatToMonospace(
+              this.formatToMinutes(this.state.currentTime)
+            )}
+          </p>
+          <span className="c-audio-info__time-text-separator">/</span>
+          <p className="c-audio-info__time-text-duration">
+            {this.formatToMonospace(
+              this.formatToMinutes(this.audio && this.audio.duration)
+            )}
+          </p>
+        </div>
         <div className="c-audio-info__controls">
-          <i className="material-icons" onClick={this.onPrevClick.bind(this)}>
+          <i className="material-icons" onClick={this.setPrev.bind(this)}>
             skip_previous
           </i>
           <i
             className="material-icons"
             onClick={this.onPlayPauseClick.bind(this)}
           >
-            {this.state.isPlay ? "play_arrow" : "pause_arrow"}
+            {this.state.playing ? "play_arrow" : "pause_arrow"}
           </i>
-          <i className="material-icons" onClick={this.onNextClick.bind(this)}>
+          <i className="material-icons" onClick={this.setNext.bind(this)}>
             skip_next
           </i>
         </div>
-        <div className="c-audio-info__time-line" style={TIME_STYLE}>
-          <div
-            className="c-audio-info__time-line-current"
-            ref={this.timeCurrentRef}
-          />
+        <div className="c-audio-info__labels">
+          <p className="c-audio-info__labels-title">
+            {this.props.data[this.state.track].title}
+          </p>
+          <p className="c-audio-info__labels-author">
+            {this.props.data[this.state.track].subtitle}
+          </p>
         </div>
-        <p className="c-audio-info__time-text">
-          <div>
-            {
-              this.formatToMonospace(this.formatToMinutes(this.state.currentTime))
-            }
+        <div
+          className="c-audio-info__time-line"
+          ref={this.timeLineRef}
+          onClick={this.onTimeLineClick.bind(this)}
+        >
+          <div className="c-audio-info__time-line-rail">
+            <div
+              className="c-audio-info__time-line-color"
+              ref={this.timeColorRef}
+              style={TIME_STYLE}
+            />
+            <div
+              className="c-audio-info__time-line-current"
+              ref={this.timeCurrentRef}
+            />
           </div>
-          <span className="c-audio-info__time-text-separator">/</span>
-          <div>
-            {
-              this.formatToMonospace(this.formatToMinutes(this.audio && this.audio.duration))
-            }
-          </div>
-        </p>
+        </div>
       </div>
     );
   }

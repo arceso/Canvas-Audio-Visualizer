@@ -2,57 +2,44 @@
   position absolute
   bottom 15px
   width 100%
-  padding 15px
-  text-align right
+  padding 15px 
 
-  &__title
-  &__author
   &__controls
   &__time-text
+  &__labels
     color #f1f1f1
+    width 33.3333%
+    display inline-block
 
-  &__title
-  &__author
+  &__labels-title
+  &__labels-author
     font-size: 25px
     margin 0
   
-  &__title
+  &__labels
+    text-align right
+
+  &__labels-title
     margin-bottom 5px
 
-  &__author  
+  &__labels-author  
     margin-bottom 15px
 
   &__controls
-    position absolute
-    left 15px
-    top calc(50% - 10px)
-    transform translateY(-50%)
-    user-select none
+    text-align center
 
   &__controls > i
     font-size 25px
     width 25px
+    user-select none
     &:not(:first-child)
       margin-left 10px
 
-  &__time-line
-    position relative
-    height 4px
-    border-radius 2px
-    background-color #ff0250
+  &__time-text
+    margin-top 15px
 
-  &__time-line-current
-    width 15px
-    height 15px
-    background-color white
-    border-radius 7.5px
-    position absolute
-    top 50%
-    transform translateY(-50%)
-    left 0
-    transition left 1s linear
-
-  &__time-text > div 
+  &__time-text-current
+  &__time-text-duration
     display inline
   
   &__time-text-separator
@@ -64,3 +51,41 @@
     text-align center
     &:nth-child(2)
       width 5px
+
+  &__time-line
+    padding 5px 0
+
+  &__time-line-rail
+    position relative
+    height 2px
+    border-radius 2px
+    background-color rgba(132, 132, 132, 0.33)
+    transition height linear .1s
+
+  &__time-line-color
+    position absolute
+    left 0
+    top 0
+    height 100%
+    width 0
+    color yellow
+    transition color ease .333s, width linear .1s
+
+  &__time-line-current
+    width 7.5px
+    height 7.5px
+    background-color white
+    border-radius 7.5px
+    position absolute
+    top 50%
+    transform translateY(-50%)
+    left 0
+    transition left 1s linear
+    transition all linear .1s
+
+  &__time-line:hover &__time-line-rail
+    height 4px
+
+  &__time-line:hover &__time-line-current
+    width 15px
+    height 15px
